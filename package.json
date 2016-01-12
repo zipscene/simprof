@@ -1,0 +1,39 @@
+{
+  "name": "zs-simple-profiler",
+  "version": "0.0.1",
+  "description": "ZS Library: zs-simple-profiler",
+  "main": "./dist/lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@git.zipscene.com:zsapilibs/zs-simple-profiler.git"
+  },
+  "scripts": {
+    "lint": "node ./node_modules/.bin/eslint . || exit 0",
+    "docs": "node ./node_modules/.bin/yuidoc .",
+    "test": "npm run-script build && node ./node_modules/.bin/mocha ./dist/test -R spec",
+    "build": "rm -rf dist && ./node_modules/.bin/broccoli build dist && chmod u+x dist/bin/* && rm -rf tmp",
+    "prepublish": "npm run-script build && npm run-script docs"
+  },
+  "dependencies": {
+    "babel-runtime": "6.3.19",
+    "lodash": "^3.10.1",
+    "xerror": "^1.1.0"
+  },
+  "devDependencies": {
+    "broccoli": "^0.16.9",
+    "broccoli-babel-transpiler": "^5.5.0",
+    "broccoli-cli": "^1.0.0",
+    "broccoli-merge-trees": "^1.1.1",
+    "broccoli-static-compiler": "^0.2.2",
+    "broccoli-wrap": "0.0.2",
+    "chai": "^3.4.1",
+    "es6-promise": "^3.0.2",
+    "eslint": "^1.10.3",
+    "mocha": "^2.3.4",
+    "source-map-support": "^0.4.0",
+    "yuidocjs": "^0.9.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.zipscene.com/"
+  }
+}
