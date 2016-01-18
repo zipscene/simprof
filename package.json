@@ -11,7 +11,7 @@
     "lint": "node ./node_modules/.bin/eslint . || exit 0",
     "docs": "node ./node_modules/.bin/yuidoc .",
     "test": "npm run-script build && node ./node_modules/.bin/mocha ./dist/test -R spec",
-    "build": "rm -rf dist && ./node_modules/.bin/broccoli build dist && chmod u+x dist/bin/* && rm -rf tmp",
+    "build": "rm -rf dist && ./node_modules/.bin/broccoli build dist; chmod -f u+x dist/bin/*; rm -rf tmp",
     "prepublish": "npm run-script build && npm run-script docs"
   },
   "dependencies": {
