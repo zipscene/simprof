@@ -3,7 +3,7 @@ const XError = require('xerror');
 const Profiler = require('../lib');
 
 describe.only('Profiler', function() {
-	afterEach(function() {
+	beforeEach(function() {
 		Profiler.disable();
 		Profiler.emitter.removeAllListeners();
 	});
