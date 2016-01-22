@@ -16,8 +16,8 @@ describe.only('Profiler', function() {
 
 		let block = profiler.begin('will never run');
 
-		expect(Profiler.isEnabled).to.be.false;
-		expect(block).to.be.undefined;
+		expect(Profiler.isEnabled()).to.be.false;
+		expect(block).to.equal(profiler.disabledBlock);
 		expect(hasBegun).to.be.false;
 	});
 
@@ -31,19 +31,19 @@ describe.only('Profiler', function() {
 
 		let block = profiler.begin('will indeed run');
 
-		expect(Profiler.isEnabled).to.be.true;
+		expect(Profiler.isEnabled()).to.be.true;
 		expect(block).to.be.an('object');
 		expect(hasBegun).to.be.true;
 	});
 
 	it('@enable', function() {
 		Profiler.enable();
-		expect(Profiler.isEnabled).to.be.true;
+		expect(Profiler.isEnabled()).to.be.true;
 	});
 
 	it('@disable', function() {
 		Profiler.disable();
-		expect(Profiler.isEnabled).to.be.false;
+		expect(Profiler.isEnabled()).to.be.false;
 	});
 
 	it('#begin should return a block', function() {
