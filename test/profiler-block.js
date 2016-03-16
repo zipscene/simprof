@@ -131,6 +131,19 @@ describe('ProfilerBlock', function() {
 
 	describe('#wrappedEnd', function() {
 		it('returns a function that calls #end() and passes its argument through', function() {
+			let hasEnded = false;
+			this.profiler.on('end', () => hasEnded = true);
+
+			let options = { profiler: this.profiler };
+			let block = new ProfilerBlock(options);
+			let wrapped = block.wrappedEnd();
+
+			return Promise.resolve('foo')
+				.then(wrapped)
+				.then((res) => {
+					expect(res).to.equal('foo');
+					expect(hasEnded).to.be.true;
+				});
 		});
 	});
 });
