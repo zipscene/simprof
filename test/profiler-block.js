@@ -1,4 +1,6 @@
+const _ = require('lodash');
 const { expect } = require('chai');
+
 const ProfilerBlock = require('../lib/profiler-block');
 const Profiler = require('../lib');
 
@@ -30,11 +32,10 @@ describe('ProfilerBlock', function() {
 
 		it('uses an existing stats object from the Profiler', function() {
 			let stats = {};
-			this.profiler.stats.stats = stats;
+			this.profiler.stats['block-name'] = stats;
 
 			let options = {
-				id: 1,
-				name: 'stats',
+				name: 'block-name',
 				profiler: this.profiler
 			};
 			let block = new ProfilerBlock(options);
@@ -58,25 +59,73 @@ describe('ProfilerBlock', function() {
 			};
 			let inactiveBlock = new ProfilerBlock(inactiveOptions);
 
+			expect(this.profiler.activeBlocksById[activeBlock.id]).to.equal(activeBlock);
 			expect(this.profiler.activeBlocksByName[activeBlock.name]).to.equal(activeBlock);
+			expect(this.profiler.activeBlocksById[inactiveBlock.id]).to.be.undefined;
 			expect(this.profiler.activeBlocksByName[inactiveBlock.name]).to.be.undefined;
 		});
 	});
 
 	describe('#end', function() {
 		it('sets `endedOn` and `duration`', function() {
+			let options = { profiler: this.profiler };
+			let block = new ProfilerBlock(options);
+			block.end();
+			expect(block.endedOn).not.to.be.undefined;
+			expect(block.duration).not.to.be.undefined;
 		});
 
 		it('returns a stats object', function() {
+			let options = { profiler: this.profiler };
+			let block = new ProfilerBlock(options);
+			let stats = block.end();
+			expect(stats.sum).to.be.a('number');
+			expect(stats.sumSq).to.be.a('number');
+			expect(stats.avg).to.be.a('number');
+			expect(stats.std).to.be.a('number');
+			expect(stats.min).to.be.a('number');
+			expect(stats.max).to.be.a('number');
 		});
 
 		it('removes itself from the Profiler', function() {
+			let options = { profiler: this.profiler };
+			let block = new ProfilerBlock(options);
+			block.end();
+			expect(this.profiler.activeBlocksById[block.id]).to.be.undefined;
+			expect(this.profiler.activeBlocksByName[block.name]).to.be.undefined;
 		});
 
 		it('warns on an iteration over the warnThreshold after 100 iterations', function() {
+			let hasWarned = false;
+			this.profiler.on('warning', () => hasWarned = true);
+
+			let options = {
+				warnThreshold: 100,
+				profiler: this.profiler
+			};
+			_.times(100, () => {
+				let block = new ProfilerBlock(options);
+				block.end();
+			});
+
+			let block = new ProfilerBlock(options);
+			return new Promise((resolve) => {
+				setTimeout(() => {
+					block.end();
+					resolve();
+				}, 100);
+			})
+				.then(() => expect(hasWarned).to.be.true);
 		});
 
 		it('calls Profiler#emitEnd()', function() {
+			let hasEnded = false;
+			this.profiler.on('end', () => hasEnded = true);
+
+			let options = { profiler: this.profiler };
+			let block = new ProfilerBlock(options);
+			block.end();
+			expect(hasEnded).to.be.true;
 		});
 	});
 
