@@ -101,7 +101,7 @@ describe('ProfilerBlock', function() {
 			const block = new ProfilerBlock(id, name, options);
 
 			let hasWarned = false;
-			this.profiler.on('warning', () => hasWarned = true);
+			block.on('warning', () => hasWarned = true);
 
 			_.times(100, () => {
 				const block = new ProfilerBlock(id, name, options);
@@ -115,14 +115,14 @@ describe('ProfilerBlock', function() {
 				.then(() => expect(hasWarned).to.be.true);
 		});
 
-		it('calls Profiler#emitEnd()', function() {
+		it('emits an "end" event', function() {
 			const id = 0;
 			const name = 'foo';
 			const options = { profiler: this.profiler };
 			const block = new ProfilerBlock(id, name, options);
 
 			let hasEnded = false;
-			this.profiler.on('end', () => hasEnded = true);
+			block.on('end', () => hasEnded = true);
 
 			block.end();
 			expect(hasEnded).to.be.true;
@@ -138,7 +138,7 @@ describe('ProfilerBlock', function() {
 			const wrapped = block.wrappedEnd();
 
 			let hasEnded = false;
-			this.profiler.on('end', () => hasEnded = true);
+			block.on('end', () => hasEnded = true);
 
 			return Promise.resolve('foo')
 				.then(wrapped)
