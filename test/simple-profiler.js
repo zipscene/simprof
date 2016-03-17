@@ -99,6 +99,37 @@ describe('Profiler', function() {
 		});
 	});
 
+	describe('#getBlock', function() {
+		it('gets a block w/ id', function() {
+			Profiler.enable();
+			let profiler = new Profiler('test');
+			let { id } = profiler.begin('foo');
+			expect(profiler.getBlock(id)).to.be.an.instanceof(ProfilerBlock);
+		});
+
+		it('gets a block w/ name', function() {
+			Profiler.enable();
+			let profiler = new Profiler('test');
+			let { name } = profiler.begin('foo');
+			expect(profiler.getBlock(name)).to.be.an.instanceof(ProfilerBlock);
+		});
+
+		it('passes through a block', function() {
+			Profiler.enable();
+			let profiler = new Profiler('test');
+			let block = profiler.begin('foo');
+			expect(profiler.getBlock(block)).to.be.an.instanceof(ProfilerBlock);
+		});
+
+		it('throws if called w/ invalid input', function() {
+			Profiler.enable();
+			let profiler = new Profiler('test');
+			expect(() => profiler.getBlock(0)).to.throw(XError.INTERNAL_ERROR);
+			expect(() => profiler.getBlock('foo')).to.throw(XError.INTERNAL_ERROR);
+			expect(() => profiler.getBlock({})).to.throw(XError.INTERNAL_ERROR);
+		});
+	});
+
 	describe('#begin', function() {
 		it('#begin should return a block', function() {
 			Profiler.enable();
