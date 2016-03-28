@@ -212,33 +212,37 @@ describe('Profiler', function() {
 	});
 
 	describe('#wrap', function() {
-		it('should wrap functions', function() {
+		it('should wrap synchronous functions', function() {
 			Profiler.enable();
-
 			let profiler = new Profiler('wrapper\'s delight');
-
-			let hasRan = false;
-			profiler.wrap(() => hasRan = true, 'it\'s a wrap');
-
-			expect(hasRan).to.be.true;
+			let fnObj = {
+				fn(arg1, arg2) {
+					expect(this).to.equal(fnObj);
+					return arg1 + arg2;
+				}
+			};
+			fnObj.fn = profiler.wrap(fnObj.fn, 'foo');
+			let result = fnObj.fn(3, 4);
+			expect(result).to.equal(7);
 		});
 
-		it('should wrap promises', function(done) {
+		it('should wrap asynchronous functions', function() {
 			Profiler.enable();
-
 			let profiler = new Profiler('wrapper\'s delight');
-
-			let hasRan = false;
-			let iPromise = new Promise((resolve) => {
-				hasRan = true;
-				resolve();
-			})
-				.then(() => {
-					expect(hasRan).to.be.true;
-				})
-				.then(() => done());
-
-			profiler.wrap(iPromise, 'it\'s a wrap');
+			let fnObj = {
+				fn(arg1, arg2) {
+					expect(this).to.equal(fnObj);
+					return new Promise((resolve) => {
+						setTimeout(() => {
+							resolve(arg1 + arg2);
+						}, 10);
+					});
+				}
+			};
+			fnObj.fn = profiler.wrap(fnObj.fn, 'foo');
+			return fnObj.fn(3, 4).then((result) => {
+				expect(result).to.equal(7);
+			});
 		});
 	});
 });
