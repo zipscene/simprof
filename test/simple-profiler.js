@@ -244,5 +244,25 @@ describe('Profiler', function() {
 				expect(result).to.equal(7);
 			});
 		});
+
+		it('should wrap a promise', function() {
+			let ran = false;
+			Profiler.enable();
+			let profiler = new Profiler('wrapper\'s delight');
+			let promise = new Promise((resolve) => setTimeout(() => {
+				ran = true;
+				resolve();
+			}, 10));
+			return profiler.wrap(promise, 'foo').then(() => {
+				expect(ran).to.equal(true);
+			});
+		});
+
+		it('should return a scalar', function() {
+			Profiler.enable();
+			let profiler = new Profiler('wrapper\'s delight');
+			let result = profiler.wrap(123, 'foo');
+			expect(result).to.equal(123);
+		});
 	});
 });
