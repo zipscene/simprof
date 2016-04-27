@@ -1,6 +1,6 @@
 {
   "name": "zs-simple-profiler",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "ZS Library: zs-simple-profiler",
   "main": "./dist/lib/index.js",
   "repository": {
