@@ -53,36 +53,14 @@ describe('Profiler', function() {
 		});
 	});
 
-	describe('@emitter', function() {
-		it('should emit ALREADY_EXISTS warning', function(done) {
-			Profiler.enable();
-
-			const profilerKey = 'ALREADY_EXISTS-1';
-
-			Profiler.emitter.on('warning', (namespace, warning) => {
-				expect(namespace).to.equal(profilerKey);
-				expect(warning).to.be.an.instanceof(XError);
-				expect(warning.code).to.equal(XError.ALREADY_EXISTS);
-				done();
-			});
-
-			new Profiler(profilerKey); // eslint-disable-line no-new
-			new Profiler(profilerKey); // eslint-disable-line no-new
-		});
-	});
-
 	describe('@constructor', function() {
-		it('should emit ALREADY_EXISTS warning', function(done) {
+		it('should reuse existing namespaces', function() {
 			Profiler.enable();
 
-			new Profiler('ALREADY_EXISTS-2'); // eslint-disable-line no-new
-			let profiler2 = new Profiler('ALREADY_EXISTS-2');
+			let profiler1 = new Profiler('ALREADY_EXISTS');
+			let profiler2 = new Profiler('ALREADY_EXISTS');
 
-			profiler2.on('warning', (warning) => {
-				expect(warning).to.be.an.instanceof(XError);
-				expect(warning.code).to.equal(XError.ALREADY_EXISTS);
-				done();
-			});
+			expect(profiler1).to.equal(profiler2);
 		});
 
 		it('should start disabled', function() {
@@ -123,7 +101,7 @@ describe('Profiler', function() {
 
 		it('throws if called w/ invalid input', function() {
 			Profiler.enable();
-			let profiler = new Profiler('test');
+			let profiler = new Profiler('invalid-input');
 			expect(() => profiler.getBlock(0)).to.throw(XError.INTERNAL_ERROR);
 			expect(() => profiler.getBlock('foo')).to.throw(XError.INTERNAL_ERROR);
 			expect(() => profiler.getBlock({})).to.throw(XError.INTERNAL_ERROR);
@@ -193,7 +171,7 @@ describe('Profiler', function() {
 		it('should support `name`', function() {
 			Profiler.enable();
 
-			let profiler = new Profiler('test');
+			let profiler = new Profiler('something-unique');
 			let block = profiler.begin('foo');
 			let aggregate = profiler.end(block.name);
 
@@ -203,7 +181,7 @@ describe('Profiler', function() {
 		it('should support `id`', function() {
 			Profiler.enable();
 
-			let profiler = new Profiler('test');
+			let profiler = new Profiler('something-more-unique');
 			let block = profiler.begin('foo');
 			let aggregate = profiler.end(block.id);
 
