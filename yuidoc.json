@@ -1,6 +1,6 @@
 {
-	"name": "zs-simple-profiler",
-	"description": "ZS Library: zs-simple-profiler",
+	"name": "simprof",
+	"description": "ZS Library: simprof",
 	"options": {
 		"outdir": "./docs",
 		"exclude": "dist,tmp,test,node_modules"
