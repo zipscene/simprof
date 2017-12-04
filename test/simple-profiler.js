@@ -103,12 +103,12 @@ describe('Profiler', function() {
 			expect(profiler.getBlock(block)).to.be.an.instanceof(ProfilerBlock);
 		});
 
-		it('throws if called w/ invalid input', function() {
+		it('handles invalid input', function() {
 			Profiler.enable();
 			let profiler = new Profiler('invalid-input');
-			expect(() => profiler.getBlock(0)).to.throw(XError.INTERNAL_ERROR);
-			expect(() => profiler.getBlock('foo')).to.throw(XError.INTERNAL_ERROR);
-			expect(() => profiler.getBlock({})).to.throw(XError.INTERNAL_ERROR);
+			expect(profiler.getBlock(0)).to.equal(null);
+			expect(profiler.getBlock('foo')).to.equal(null);
+			expect(() => profiler.getBlock({})).to.throw(XError);
 		});
 	});
 
