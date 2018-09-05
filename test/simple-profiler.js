@@ -127,7 +127,7 @@ describe('Profiler', function() {
 			let profiler = new Profiler('test');
 
 			let hasBegun = false;
-			profiler.on('begin', () => hasBegun = true);
+			profiler.on('begin', () => { hasBegun = true; });
 
 			profiler.begin('foo');
 

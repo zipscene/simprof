@@ -26,7 +26,7 @@ describe('ProfilerBlock', function() {
 		it('throws if not passed a stats object', function() {
 			const id = 0;
 			const name = 'foo';
-			expect(() => new ProfilerBlock(id, name, {})).to.throw(XError.INTERNAL_ERROR);
+			expect(() => new ProfilerBlock(id, name, {})).to.throw(XError);
 		});
 	});
 
@@ -64,7 +64,7 @@ describe('ProfilerBlock', function() {
 			const block = new ProfilerBlock(id, name, { stats, warnThreshold });
 
 			let hasWarned = false;
-			block.on('warning', () => hasWarned = true);
+			block.on('warning', () => { hasWarned = true; });
 
 			_.times(100, () => {
 				const block = new ProfilerBlock(id, name, { stats, warnThreshold });
@@ -85,7 +85,7 @@ describe('ProfilerBlock', function() {
 			const block = new ProfilerBlock(id, name, { stats });
 
 			let hasEnded = false;
-			block.on('end', () => hasEnded = true);
+			block.on('end', () => { hasEnded = true; });
 
 			block.end();
 			expect(hasEnded).to.be.true;
@@ -101,7 +101,7 @@ describe('ProfilerBlock', function() {
 			const wrapped = block.wrappedEnd();
 
 			let hasEnded = false;
-			block.on('end', () => hasEnded = true);
+			block.on('end', () => { hasEnded = true; });
 
 			return Promise.resolve('foo')
 				.then(wrapped)
