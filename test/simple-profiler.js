@@ -246,5 +246,42 @@ describe('Profiler', function() {
 			let result = profiler.wrap(123, 'foo');
 			expect(result).to.equal(123);
 		});
+
+		it('should handle throws', function() {
+			Profiler.enable();
+			let profiler = new Profiler('wrapper\'s delight');
+			const fn = () => {
+				let innerFn = profiler.wrap(() => {
+					throw new Error('fooerror');
+				}, 'foo');
+				return innerFn();
+			};
+			expect(fn).to.throw('fooerror');
+		});
+
+		it('should handle promise rejection', async function() {
+			Profiler.enable();
+			let profiler = new Profiler('wrapper\'s delight');
+			const innerFn = async() => {
+				throw new Error('fooerror');
+			};
+			let wrappedFn = profiler.wrap(innerFn);
+			try {
+				await wrappedFn();
+			} catch (ex) {
+				expect(ex.message).to.equal('fooerror');
+				return;
+			}
+			throw new Error('Unexpected success');
+		});
+
+		it('should execute with run()', function() {
+			Profiler.enable();
+			let profiler = new Profiler('wrapper\'s delight');
+			let result = profiler.run('foo', () => {
+				return 7;
+			});
+			expect(result).to.equal(7);
+		});
 	});
 });
