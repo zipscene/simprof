@@ -81,30 +81,23 @@ class Whatever {
 		prof.end();
 	}
 
-	wrappingTheEnd() {
-		// Simprof has a convenient promise wrapper
-		let prof = profiler.begin('#wrappingTheEnd');
-
-		// This does the equivalent of calling `prof.end()`,
-		// and then returning the original function argument as a passthrough.
-		// Thus this promise chain returns 'lol'.
-		return Promise.resolve('lol')
-			.then(prof.wrappedEnd());
+	async wrapAndRun() {
+		// This wraps and immediately runs the given function
+		return await profiler.run('#wrapAndRun()', async() => {
+			// Do stuff
+		});
 	}
 
-	wrappingTheWholeThing() {
-		// It also has a method for wrapping an entire function
-		// NOTE: We don't use this feature much, because it often means extra function call overhead.
-		profiler.wrap(() => someFunction(), '#wrappingTheWholeThing someFunction');
-		profiler.wrap(someOtherFunction(), '#wrappingTheWholeThing someOtherFunction');
-		profiler.wrap(someOtherOtherFunction, '#wrappingTheWholeThing someOtherOtherFunction');
-
-
-		// This is kind of syntactically nice when combining features from above, I guess
-		return Promise.resolve('hello')
-			.then(profiler.wrap((value) => this.foo(value), 'foo'))
-			.then(profiler.wrap((value) => this.bar(value), 'bar'))
-			.then(profiler.wrap((value) => this.baz(value), 'baz'));
+	profileSequenceOfSteps() {
+		// This allows a sequence of steps within an overall function to be individually profiled
+		let profseq = profiler.sequence('#profileSequenceOfSteps');
+		profseq.step('step1');
+		// do stuff
+		profseq.step('step2');
+		// do stuff
+		profseq.step('step3');
+		// do stuff
+		profseq.end();
 	}
 
 }

@@ -193,6 +193,23 @@ describe('Profiler', function() {
 		});
 	});
 
+	describe('#sequence', function() {
+		it('should track sequences of steps', function() {
+			Profiler.enable();
+
+			let profiler = new Profiler('sequence-test');
+			let seq = profiler.sequence('foo');
+			seq.step('step1');
+			seq.step('step2');
+			seq.end();
+
+			let stats = profiler.getStats();
+			expect(stats.foo.count).to.equal(1);
+			expect(stats['foo step step1'].count).to.equal(1);
+			expect(stats['foo step step2'].count).to.equal(1);
+		});
+	});
+
 	describe('#wrap', function() {
 		it('should wrap synchronous functions', function() {
 			Profiler.enable();
