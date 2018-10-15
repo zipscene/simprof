@@ -1,6 +1,6 @@
 {
   "name": "simprof",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Simple code profiler",
   "main": "./lib/index.js",
   "repository": {
